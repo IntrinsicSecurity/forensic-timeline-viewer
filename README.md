@@ -248,6 +248,12 @@ The `provider` value must match the provider name in the EVTX file, lowercased. 
 
 ---
 
+## Acknowledgements
+
+The concept for this toolkit was directly inspired by Eric Zimmerman's forensic tools, in particular [Timeline Explorer](https://ericzimmerman.github.io/#!index.md) and the broader EZ Tools suite. Zimmerman's work has set the standard for Windows forensic tooling and made modern DFIR practice significantly more accessible. This toolkit exists to bring equivalent capability to Linux and macOS analysis environments.
+
+---
+
 ## Known Limitations
 
 - The viewer is a single-user desktop application. It is not designed for server deployment.

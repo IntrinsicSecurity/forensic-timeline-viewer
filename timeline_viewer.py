@@ -23,7 +23,7 @@ try:
     from PyQt6.QtWidgets import (
         QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
         QTableView, QLineEdit, QLabel, QPushButton, QTextEdit, QSplitter,
-        QFileDialog, QHeaderView, QFrame, QAbstractItemView, QComboBox, QMessageBox,
+        QFileDialog, QHeaderView, QFrame, QAbstractItemView, QComboBox, QMessageBox, QDialog,
     )
     from PyQt6.QtCore import Qt, QAbstractTableModel, QModelIndex, QTimer, QSize, QRect, QEvent, pyqtSignal
     from PyQt6.QtGui import QColor, QFont, QAction, QKeySequence, QBrush, QPixmap, QIcon
@@ -961,6 +961,11 @@ class MainWindow(QMainWindow):
         export_bm_act.triggered.connect(self._export_bookmarked)
         file_menu.addAction(export_bm_act)
 
+        help_menu = self.menuBar().addMenu("Help")
+        shortcuts_act = QAction("Keyboard Shortcuts…", self)
+        shortcuts_act.triggered.connect(self._show_help)
+        help_menu.addAction(shortcuts_act)
+
         # Toolbar: actions only, no search bar
         toolbar = self.addToolBar("Main")
         toolbar.setMovable(False)
@@ -1424,6 +1429,69 @@ class MainWindow(QMainWindow):
             except Exception:
                 lines.append(f"  {event_data}")
         self._detail.setPlainText("\n".join(lines))
+
+    def _show_help(self):
+        dlg = QDialog(self)
+        dlg.setWindowTitle("Keyboard Shortcuts")
+        dlg.setMinimumWidth(520)
+        layout = QVBoxLayout(dlg)
+
+        text = QTextEdit()
+        text.setReadOnly(True)
+        text.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
+        text.setPlainText(
+            "BOOKMARKING\n"
+            "─────────────────────────────────────────────────────\n"
+            "Space             Toggle bookmark on selected row and advance\n"
+            "                  to the next row. Sets the range anchor.\n"
+            "Shift+Space       Bookmark all rows from the anchor to the\n"
+            "                  current row (inclusive).\n"
+            "Shift+Click       Bookmark all rows from the anchor to the\n"
+            "                  clicked row (inclusive).\n"
+            "☆ Only            Show bookmarked rows only / show all rows.\n"
+            "Clear ☆           Clear all bookmarks.\n"
+            "Ctrl+B            Toggle bookmark on the selected row\n"
+            "                  (does not advance).\n"
+            "File > Export bookmarked\n"
+            "                  Save bookmarked rows to a new CSV file.\n"
+            "\n"
+            "NAVIGATION AND FILES\n"
+            "─────────────────────────────────────────────────────\n"
+            "Ctrl+O            Open a CSV file.\n"
+            "\n"
+            "FILTERING\n"
+            "─────────────────────────────────────────────────────\n"
+            "Column headers    Type in the filter box below each column\n"
+            "                  label to filter that column. Event ID\n"
+            "                  accepts comma-separated values: 4624,4625\n"
+            "Search bar        Free-text search across event ID,\n"
+            "                  description, computer, user, channel, and\n"
+            "                  event_data. Prefix with NOT to exclude:\n"
+            "                  NOT miiserver.exe\n"
+            "Date range        Restrict to a UTC time window. Accepts\n"
+            "                  YYYY-MM-DD or YYYY-MM-DD HH:MM:SS.\n"
+            "Query bar         Full pandas query syntax. Press Enter to\n"
+            "                  apply. Example:\n"
+            "                  event_id == \"4648\" and not event_data.str.contains(\"NT SERVICE\")\n"
+            "Clear all         Clear column filters, search, and date range.\n"
+            "Sort              Click a column label to sort. Click again\n"
+            "                  to reverse.\n"
+            "\n"
+            "DISPLAY\n"
+            "─────────────────────────────────────────────────────\n"
+            "Fit columns       Resize all columns to fit their content.\n"
+            "--dark            Launch with dark colour scheme\n"
+            "                  (command-line flag).\n"
+            "--scale FACTOR    UI scale for 4K displays, e.g. --scale 1.75\n"
+            "                  (command-line flag).\n"
+        )
+        layout.addWidget(text)
+
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(dlg.accept)
+        layout.addWidget(close_btn)
+
+        dlg.exec()
 
 
 def main():

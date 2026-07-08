@@ -1,0 +1,229 @@
+events:
+  # Logon/Logoff
+  - provider: microsoft-windows-security-auditing
+    event_id: 4624
+    description: "Successful logon"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4625
+    description: "Failed logon"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4634
+    description: "Logoff"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4647
+    description: "User-initiated logoff"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4648
+    description: "Logon using explicit credentials (runas)"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4672
+    description: "Special privileges assigned to new logon"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4778
+    description: "Session reconnected to Window Station"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4779
+    description: "Session disconnected from Window Station"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4800
+    description: "Workstation locked"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4801
+    description: "Workstation unlocked"
+
+  # Process
+  - provider: microsoft-windows-security-auditing
+    event_id: 4688
+    description: "Process creation"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4689
+    description: "Process terminated"
+
+  # Scheduled tasks
+  - provider: microsoft-windows-security-auditing
+    event_id: 4698
+    description: "Scheduled task created"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4699
+    description: "Scheduled task deleted"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4700
+    description: "Scheduled task enabled"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4701
+    description: "Scheduled task disabled"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4702
+    description: "Scheduled task updated"
+
+  # User/group management
+  - provider: microsoft-windows-security-auditing
+    event_id: 4720
+    description: "User account created"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4722
+    description: "User account enabled"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4723
+    description: "Password change attempt"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4724
+    description: "Password reset attempt"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4725
+    description: "User account disabled"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4726
+    description: "User account deleted"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4728
+    description: "Member added to global security group"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4729
+    description: "Member removed from global security group"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4732
+    description: "Member added to local security group"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4733
+    description: "Member removed from local security group"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4738
+    description: "User account changed"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4740
+    description: "User account locked out"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4756
+    description: "Member added to universal security group"
+
+  # Kerberos
+  - provider: microsoft-windows-security-auditing
+    event_id: 4768
+    description: "Kerberos TGT requested"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4769
+    description: "Kerberos service ticket requested"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4770
+    description: "Kerberos service ticket renewed"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4771
+    description: "Kerberos pre-authentication failed"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4772
+    description: "Kerberos authentication ticket request failed"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4773
+    description: "Kerberos service ticket request failed"
+
+  # NTLM
+  - provider: microsoft-windows-security-auditing
+    event_id: 4776
+    description: "NTLM credential validation"
+
+  # Object access / file
+  - provider: microsoft-windows-security-auditing
+    event_id: 4656
+    description: "Handle to object requested"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4663
+    description: "Object access attempt"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4670
+    description: "Object permissions changed"
+
+  # Registry
+  - provider: microsoft-windows-security-auditing
+    event_id: 4657
+    description: "Registry value modified"
+
+  # Sensitive privilege use
+  - provider: microsoft-windows-security-auditing
+    event_id: 4673
+    description: "Sensitive privilege use"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4674
+    description: "Privileged object operation"
+
+  # Audit policy
+  - provider: microsoft-windows-security-auditing
+    event_id: 4719
+    description: "System audit policy changed"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4906
+    description: "CrashOnAuditFail value changed"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4907
+    description: "Auditing settings on object changed"
+
+  # Logon rights / share
+  - provider: microsoft-windows-security-auditing
+    event_id: 5140
+    description: "Network share accessed"
+  - provider: microsoft-windows-security-auditing
+    event_id: 5142
+    description: "Network share object added"
+  - provider: microsoft-windows-security-auditing
+    event_id: 5145
+    description: "Network share object access checked"
+
+  # Windows Firewall
+  - provider: microsoft-windows-security-auditing
+    event_id: 4946
+    description: "Firewall rule added"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4947
+    description: "Firewall rule modified"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4948
+    description: "Firewall rule deleted"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4950
+    description: "Firewall setting changed"
+  - provider: microsoft-windows-security-auditing
+    event_id: 5025
+    description: "Windows Firewall service stopped"
+
+  # Directory service access
+  - provider: microsoft-windows-security-auditing
+    event_id: 4662
+    description: "Operation performed on Active Directory object"
+
+  # Local group membership enumeration
+  - provider: microsoft-windows-security-auditing
+    event_id: 4799
+    description: "Security-enabled local group membership enumerated"
+
+  # Key management / cryptography
+  - provider: microsoft-windows-security-auditing
+    event_id: 5058
+    description: "Key file operation"
+  - provider: microsoft-windows-security-auditing
+    event_id: 5061
+    description: "Cryptographic operation"
+  - provider: microsoft-windows-security-auditing
+    event_id: 5379
+    description: "Credential Manager credentials read"
+  - provider: microsoft-windows-security-auditing
+    event_id: 5038
+    description: "Code integrity: file hash invalid"
+
+  # Computer account / system
+  - provider: microsoft-windows-security-auditing
+    event_id: 4742
+    description: "Computer account changed"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4616
+    description: "System time changed"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4904
+    description: "Security event source registered"
+  - provider: microsoft-windows-security-auditing
+    event_id: 4905
+    description: "Security event source unregistered"
+
+  # Pass-the-hash / unusual logon indicators
+  - provider: microsoft-windows-security-auditing
+    event_id: 4964
+    description: "Special groups assigned to new logon"

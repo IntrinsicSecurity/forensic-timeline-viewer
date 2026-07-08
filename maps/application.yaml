@@ -1,0 +1,29 @@
+events:
+  # SQL Server (MSSQLSERVER) - Application log
+  - provider: mssqlserver
+    event_id: 18265
+    description: "SQL Server database log backup completed"
+
+  - provider: mssqlserver
+    event_id: 9724
+    description: "SQL Server Service Broker activation failure"
+
+  # Windows Push Notifications - Operational log
+  - provider: microsoft-windows-pushnotifications-platform
+    event_id: 2002
+    description: "Push notification channel registered"
+
+  # Windows Store Install Agent - Operational log
+  - provider: microsoft-windows-install-agent
+    event_id: 2002
+    description: "Windows Store install agent event"
+
+  # Windows Diagnostics Networking - Operational log
+  - provider: microsoft-windows-diagnostics-networking
+    event_id: 2000
+    description: "Network diagnostics completed"
+
+  # Windows Store Install Agent - Operational log
+  - provider: microsoft-windows-install-agent
+    event_id: 2000
+    description: "Windows Store install agent initialised"

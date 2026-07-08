@@ -1,0 +1,54 @@
+events:
+  # Windows PowerShell (classic log)
+  - provider: windows powershell
+    event_id: 400
+    description: "PowerShell engine state changed to started"
+  - provider: windows powershell
+    event_id: 403
+    description: "PowerShell engine state changed to stopped"
+  - provider: windows powershell
+    event_id: 600
+    description: "PowerShell provider started"
+
+  # Microsoft-Windows-PowerShell/Operational
+  - provider: microsoft-windows-powershell
+    event_id: 4103
+    description: "PowerShell module logging - pipeline execution"
+  - provider: microsoft-windows-powershell
+    event_id: 4104
+    description: "PowerShell script block logged"
+  - provider: microsoft-windows-powershell
+    event_id: 4105
+    description: "PowerShell command start"
+  - provider: microsoft-windows-powershell
+    event_id: 4106
+    description: "PowerShell command stop"
+  - provider: microsoft-windows-powershell
+    event_id: 40961
+    description: "PowerShell console starting"
+  - provider: microsoft-windows-powershell
+    event_id: 40962
+    description: "PowerShell console ready"
+  - provider: microsoft-windows-powershell
+    event_id: 53504
+    description: "PowerShell authenticode signature validated"
+
+  # PowerShell Remoting / WSMan
+  - provider: microsoft-windows-winrm
+    event_id: 6
+    description: "WSMan operation CreateShell"
+  - provider: microsoft-windows-winrm
+    event_id: 8
+    description: "WSMan operation DeleteShell"
+  - provider: microsoft-windows-winrm
+    event_id: 15
+    description: "WSMan operation SendInput"
+  - provider: microsoft-windows-winrm
+    event_id: 16
+    description: "WSMan operation Receive"
+  - provider: microsoft-windows-winrm
+    event_id: 91
+    description: "WSMan session created"
+  - provider: microsoft-windows-winrm
+    event_id: 168
+    description: "WSMan user authentication"

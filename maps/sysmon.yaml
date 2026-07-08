@@ -1,0 +1,88 @@
+events:
+  - provider: microsoft-windows-sysmon
+    event_id: 1
+    description: "Process creation"
+  - provider: microsoft-windows-sysmon
+    event_id: 2
+    description: "File creation time changed"
+  - provider: microsoft-windows-sysmon
+    event_id: 3
+    description: "Network connection"
+  - provider: microsoft-windows-sysmon
+    event_id: 4
+    description: "Sysmon service state changed"
+  - provider: microsoft-windows-sysmon
+    event_id: 5
+    description: "Process terminated"
+  - provider: microsoft-windows-sysmon
+    event_id: 6
+    description: "Driver loaded"
+  - provider: microsoft-windows-sysmon
+    event_id: 7
+    description: "Image loaded (DLL)"
+  - provider: microsoft-windows-sysmon
+    event_id: 8
+    description: "CreateRemoteThread"
+  - provider: microsoft-windows-sysmon
+    event_id: 9
+    description: "RawAccessRead"
+  - provider: microsoft-windows-sysmon
+    event_id: 10
+    description: "Process access"
+  - provider: microsoft-windows-sysmon
+    event_id: 11
+    description: "File created"
+  - provider: microsoft-windows-sysmon
+    event_id: 12
+    description: "Registry object added or deleted"
+  - provider: microsoft-windows-sysmon
+    event_id: 13
+    description: "Registry value set"
+  - provider: microsoft-windows-sysmon
+    event_id: 14
+    description: "Registry object renamed"
+  - provider: microsoft-windows-sysmon
+    event_id: 15
+    description: "File stream created (ADS)"
+  - provider: microsoft-windows-sysmon
+    event_id: 16
+    description: "Sysmon configuration changed"
+  - provider: microsoft-windows-sysmon
+    event_id: 17
+    description: "Named pipe created"
+  - provider: microsoft-windows-sysmon
+    event_id: 18
+    description: "Named pipe connected"
+  - provider: microsoft-windows-sysmon
+    event_id: 19
+    description: "WMI event filter registered"
+  - provider: microsoft-windows-sysmon
+    event_id: 20
+    description: "WMI event consumer registered"
+  - provider: microsoft-windows-sysmon
+    event_id: 21
+    description: "WMI event consumer to filter binding"
+  - provider: microsoft-windows-sysmon
+    event_id: 22
+    description: "DNS query"
+  - provider: microsoft-windows-sysmon
+    event_id: 23
+    description: "File deleted"
+  - provider: microsoft-windows-sysmon
+    event_id: 24
+    description: "Clipboard contents captured"
+  - provider: microsoft-windows-sysmon
+    event_id: 25
+    description: "Process tampering"
+  - provider: microsoft-windows-sysmon
+    event_id: 26
+    description: "File delete logged"
+  - provider: microsoft-windows-sysmon
+    event_id: 27
+    description: "File block executable"
+  - provider: microsoft-windows-sysmon
+    event_id: 28
+    description: "File block shredding"
+  - provider: microsoft-windows-sysmon
+    event_id: 29
+    description: "File executable detected"

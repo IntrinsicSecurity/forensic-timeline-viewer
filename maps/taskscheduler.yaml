@@ -1,0 +1,52 @@
+events:
+  - provider: microsoft-windows-taskscheduler
+    event_id: 100
+    description: "Task started"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 101
+    description: "Task start failed"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 102
+    description: "Task completed"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 103
+    description: "Task action failed to start"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 106
+    description: "Task registered"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 107
+    description: "Task triggered on scheduler"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 108
+    description: "Task triggered on event"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 110
+    description: "Task triggered by user"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 111
+    description: "Task terminated"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 119
+    description: "Task triggered by registration"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 129
+    description: "Task action launched process"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 140
+    description: "Task registered (updated)"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 141
+    description: "Task deleted"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 142
+    description: "Task disabled"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 200
+    description: "Task action started"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 201
+    description: "Task action completed"
+  - provider: microsoft-windows-taskscheduler
+    event_id: 202
+    description: "Task action failed"

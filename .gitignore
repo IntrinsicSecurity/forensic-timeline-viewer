@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+pip-wheel-metadata/
+*.spec
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# PyInstaller output
+dist/
+*.app/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Forensic artefacts - never commit case data
+*.evtx
+*.evt
+$MFT
+$J
+$LogFile
+*.hive
+NTUSER.DAT
+SYSTEM
+SECURITY
+SOFTWARE
+SAM
+*.vmem
+*.E01
+*.ex01
+*.L01
+*.AFF
+*.pcap
+*.pcapng
+
+# CSV output - may contain case data
+*.csv
+
+# Test data directories
+test_data/
+sample_data/
+kape_out/
+triage_out/
+
+# Credentials and secrets
+*.key
+*.pem
+*.p12
+secrets.yaml
+config.local.yaml

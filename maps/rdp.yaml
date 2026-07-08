@@ -1,0 +1,39 @@
+events:
+  # RDP - TerminalServices-LocalSessionManager
+  - provider: microsoft-windows-terminalservices-localsessionmanager
+    event_id: 21
+    description: "RDP session logon succeeded"
+  - provider: microsoft-windows-terminalservices-localsessionmanager
+    event_id: 22
+    description: "RDP session shell started"
+  - provider: microsoft-windows-terminalservices-localsessionmanager
+    event_id: 23
+    description: "RDP session logoff"
+  - provider: microsoft-windows-terminalservices-localsessionmanager
+    event_id: 24
+    description: "RDP session disconnected"
+  - provider: microsoft-windows-terminalservices-localsessionmanager
+    event_id: 25
+    description: "RDP session reconnected"
+  - provider: microsoft-windows-terminalservices-localsessionmanager
+    event_id: 39
+    description: "RDP session disconnected by another logon"
+  - provider: microsoft-windows-terminalservices-localsessionmanager
+    event_id: 40
+    description: "RDP session disconnect reason"
+
+  # RDP - TerminalServices-RemoteConnectionManager
+  - provider: microsoft-windows-terminalservices-remoteconnectionmanager
+    event_id: 1149
+    description: "RDP remote authentication succeeded"
+  - provider: microsoft-windows-terminalservices-remoteconnectionmanager
+    event_id: 261
+    description: "RDP listener received connection"
+
+  # RDP - TerminalServices-ClientActiveXCore / RDPClient
+  - provider: microsoft-windows-terminalservices-clientactivexcore
+    event_id: 1024
+    description: "RDP client attempt to connect"
+  - provider: microsoft-windows-terminalservices-clientactivexcore
+    event_id: 1102
+    description: "RDP client connected"

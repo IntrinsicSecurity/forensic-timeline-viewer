@@ -1,0 +1,15 @@
+events:
+  # SMBServer - Security
+  - provider: microsoft-windows-smbserver
+    event_id: 551
+    description: "SMB authentication failed"
+
+  # SMBServer - Operational
+  - provider: microsoft-windows-smbserver
+    event_id: 1020
+    description: "SMB1 client connection negotiated"  # unverified - review against known-good data
+
+  # SMBClient - Security
+  - provider: microsoft-windows-smbclient
+    event_id: 31010
+    description: "SMB client failed to connect to share"

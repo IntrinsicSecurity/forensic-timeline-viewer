@@ -4,7 +4,7 @@ A forensic timeline analysis toolkit for DFIR practitioners. Parse Windows foren
 
 Built and maintained by [Intrinsic Security UK](https://intrinsicsecurityuk.com).
 
-Tested on macOS (Sequoia) and RHEL 10.
+Tested on MacOS (Sequoia) and RHEL 10.
 
 ---
 

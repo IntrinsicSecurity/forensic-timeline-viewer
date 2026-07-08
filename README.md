@@ -20,8 +20,19 @@ The toolkit has two layers:
 | `mft_parse.py` | Master File Table | `$MFT` |
 | `usn_parse.py` | USN Change Journal | `$J` |
 | `reg_parse.py` | Registry hives | SAM, SYSTEM, SOFTWARE, SECURITY, NTUSER.DAT |
+| `recyclebin_parse.py` | Recycle Bin metadata | `$Recycle.Bin\<SID>\$I*` |
 
 **Intrinsic Timeline Viewer** (`timeline_viewer.py`) — a standalone PyQt6 GUI that loads any CSV output from the parsers (or any compatible CSV) and provides a unified analysis environment with filtering, searching, bookmarking, and export.
+
+---
+
+## Data Sources
+
+The parsers are not limited to KAPE output. They will work against any accessible filesystem path:
+
+- **KAPE or SANS triage collections**: point the parser at the collected artefact files directly.
+- **Mounted forensic images**: mount a raw (dd), E01, or other supported image with `ewfmount`, `xmount`, or `Arsenal Image Mounter`, then point the parser at the mounted volume. No special flags needed.
+- **Live host**: the parsers can be run directly on a live Windows host (via WSL or a mounted Python environment) or a live Linux/macOS host. Apply standard forensic caveats: running tools on a live system modifies timestamps and may alter evidence. Document all actions taken and prefer a triage collection where possible.
 
 ---
 

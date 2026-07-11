@@ -259,6 +259,21 @@ The `provider` value must match the provider name in the EVTX file, lowercased. 
 
 ---
 
+## Comparison with Other Tools
+
+For large-scale or team investigations, tools such as [log2timeline/Plaso](https://github.com/log2timeline/plaso) with [Timesketch](https://timesketch.org/) or an ELK stack may be more appropriate. Plaso parses a much wider range of artefacts in a single pass from a raw image or triage collection, and Timesketch provides collaborative analysis, tagging, and saved searches across a team. ELK is well suited to high-volume, log-heavy investigations.
+
+This toolkit occupies a different space. It is designed for fast, standalone, single-case triage — particularly useful for:
+
+- Sole practitioners or small teams without standing infrastructure
+- Client-site work on an air-gapped or network-restricted forensic workstation
+- Cases where getting results quickly matters more than broad artefact coverage
+- Analysts who want direct control over what is parsed and how it is presented
+
+It requires no server, no pipeline configuration, and no internet connection. Clone the repo, install dependencies, and parse.
+
+---
+
 ## Acknowledgements
 
 The concept for this toolkit was directly inspired by Eric Zimmerman's forensic tools, in particular [Timeline Explorer](https://ericzimmerman.github.io/#!index.md) and the broader EZ Tools suite. Zimmerman's work has set the standard for Windows forensic tooling and made modern DFIR practice significantly more accessible. This toolkit exists to bring equivalent capability to Linux and macOS analysis environments.

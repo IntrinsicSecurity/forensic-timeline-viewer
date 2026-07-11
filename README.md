@@ -21,6 +21,7 @@ The toolkit has two layers:
 | `usn_parse.py` | USN Change Journal | `$J` |
 | `reg_parse.py` | Registry hives | SAM, SYSTEM, SOFTWARE, SECURITY, NTUSER.DAT |
 | `recyclebin_parse.py` | Recycle Bin metadata | `$Recycle.Bin\<SID>\$I*` |
+| `tasks_parse.py` | Scheduled Tasks | `C:\Windows\System32\Tasks\` |
 
 **Intrinsic Timeline Viewer** (`timeline_viewer.py`) — a standalone PyQt6 GUI that loads any CSV output from the parsers (or any compatible CSV) and provides a unified analysis environment with filtering, searching, bookmarking, and export.
 
@@ -241,6 +242,36 @@ python3 reg_parse.py /kape/C/Users/username/NTUSER.DAT --hive ntuser -o ntuser.c
 ```bash
 python3 secretsdump.py -sam SAM -system SYSTEM -security SECURITY LOCAL
 ```
+
+---
+
+### recyclebin_parse.py — Recycle Bin
+
+```bash
+python3 recyclebin_parse.py /kape/C/'$Recycle.Bin'/ -o recyclebin.csv --summary
+```
+
+Accepts a single `$I` file or a directory. Recurses into SID subfolders automatically.
+
+**Output schema**: `timestamp_utc`, `original_path`, `filename`, `extension`, `size_bytes`, `size_human`, `recycle_bin_file`, `source_dir`
+
+**Note**: Only `$I` metadata files are parsed. `$R` files (the deleted file content) are ignored.
+
+---
+
+### tasks_parse.py — Scheduled Tasks
+
+```bash
+python3 tasks_parse.py /kape/C/Windows/System32/Tasks/ -o tasks.csv --summary
+```
+
+Accepts a single task XML file or the Tasks directory. Recurses into subdirectories.
+
+**Output schema**: `date_created`, `task_name`, `author`, `run_as`, `logon_type`, `enabled`, `command`, `arguments`, `triggers`, `description`, `source_file`
+
+**Triage summary** (`--summary`): flags tasks running under non-system accounts, tasks using scripting interpreters (PowerShell, cmd, wscript, cscript, mshta, rundll32, regsvr32), and tasks with no registered author.
+
+**Note**: Tasks created programmatically via the Task Scheduler COM API may exist only in the registry (`HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache`) and will not appear as XML files in the Tasks directory. Parse the SOFTWARE hive with `reg_parse.py` to recover these.
 
 ---
 

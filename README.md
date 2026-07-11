@@ -293,7 +293,7 @@ Accepts a single `UsrClass.dat` or `NTUSER.DAT` hive file, or a `Users` director
 - `last_write`: timestamp of the BagMRU registry key. Reflects the most recent Explorer browse activity at or below this folder.
 - `modified`: last modified timestamp of the folder itself, extracted from the shell item (DOS date/time, not always populated).
 - `path`: full reconstructed browsing path (e.g. `My Computer\C:\Users\username\Documents`).
-- `type`: item type — `Root`, `Volume`, `Folder`, `File`, `Network`.
+- `type`: item type — `Root`, `Volume`, `Folder`, `File`, `Network`, `Control Panel`, `URI`.
 
 **Triage summary** (`--summary`): total entry count per user, network paths, and potential removable media references.
 

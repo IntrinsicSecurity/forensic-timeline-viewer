@@ -22,6 +22,7 @@ The toolkit has two layers:
 | `reg_parse.py` | Registry hives | SAM, SYSTEM, SOFTWARE, SECURITY, NTUSER.DAT |
 | `recyclebin_parse.py` | Recycle Bin metadata | `$Recycle.Bin\<SID>\$I*` |
 | `tasks_parse.py` | Scheduled Tasks | `C:\Windows\System32\Tasks\` |
+| `shellbags_parse.py` | ShellBags (Explorer browsing history) | `UsrClass.dat`, `NTUSER.DAT` |
 
 **Intrinsic Timeline Viewer** (`timeline_viewer.py`) — a standalone PyQt6 GUI that loads any CSV output from the parsers (or any compatible CSV) and provides a unified analysis environment with filtering, searching, bookmarking, and export.
 
@@ -272,6 +273,38 @@ Accepts a single task XML file or the Tasks directory. Recurses into subdirector
 **Triage summary** (`--summary`): flags tasks running under non-system accounts, tasks using scripting interpreters (PowerShell, cmd, wscript, cscript, mshta, rundll32, regsvr32), and tasks with no registered author.
 
 **Note**: Tasks created programmatically via the Task Scheduler COM API may exist only in the registry (`HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache`) and will not appear as XML files in the Tasks directory. Parse the SOFTWARE hive with `reg_parse.py` to recover these.
+
+---
+
+### shellbags_parse.py — ShellBags
+
+```bash
+# Single hive
+python3 shellbags_parse.py /kape/C/Users/username/AppData/Local/Microsoft/Windows/UsrClass.dat -o shellbags.csv
+
+# All users in a Users directory
+python3 shellbags_parse.py /kape/C/Users/ -o shellbags.csv --summary
+```
+
+Accepts a single `UsrClass.dat` or `NTUSER.DAT` hive file, or a `Users` directory. When given a directory, it recurses to find all hive files and extracts the username from each hive's path automatically.
+
+**Output schema**: `last_write`, `modified`, `path`, `folder_name`, `type`, `username`, `source_file`
+
+- `last_write`: timestamp of the BagMRU registry key. Reflects the most recent Explorer browse activity at or below this folder.
+- `modified`: last modified timestamp of the folder itself, extracted from the shell item (DOS date/time, not always populated).
+- `path`: full reconstructed browsing path (e.g. `My Computer\C:\Users\username\Documents`).
+- `type`: item type — `Root`, `Volume`, `Folder`, `File`, `Network`.
+
+**Triage summary** (`--summary`): total entry count per user, network paths, and potential removable media references.
+
+**Where to find hives in a KAPE collection:**
+
+| Hive | Path |
+|------|------|
+| `UsrClass.dat` | `C\Users\<username>\AppData\Local\Microsoft\Windows\` |
+| `NTUSER.DAT` | `C\Users\<username>\` |
+
+**Note**: ShellBags record Explorer browsing activity including folders that no longer exist, network shares, and paths on removed USB devices. The `last_write` timestamp on a BagMRU key reflects when the entry was last updated, not necessarily when the folder was first browsed. Timestamps in the shell item itself (the `modified` field) are DOS date/time pairs with 2-second resolution and may be empty for network and virtual items.
 
 ---
 

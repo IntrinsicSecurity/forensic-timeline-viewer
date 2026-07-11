@@ -83,7 +83,7 @@ SEARCH_COLS = {"event_id", "description", "computer", "user_sid", "event_data", 
 # Columns that get a disabled filter input in the header (content better queried via Search or pandas).
 FILTER_SKIP_COLS = {"event_data", "raw_data", "data", "attributes", "content", "xml", "json"}
 
-TIMESTAMP_COL_KEYWORDS = ("timestamp", "created", "modified", "accessed", "datetime", "date", "time")
+TIMESTAMP_COL_KEYWORDS = ("timestamp", "created", "modified", "accessed", "datetime", "date", "time", "write", "last")
 
 DEFAULT_WIDTHS = {
     "timestamp_utc": 195,

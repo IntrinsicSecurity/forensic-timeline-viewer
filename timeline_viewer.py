@@ -592,6 +592,7 @@ class TimelineModel(QAbstractTableModel):
         self.beginResetModel()
         self._headers = []
         self._all_rows = []
+        csv.field_size_limit(10_000_000)
         with open(path, newline="", encoding="utf-8", errors="replace") as f:
             reader = csv.reader(f)
             self._headers = next(reader, [])

@@ -23,6 +23,7 @@ The toolkit has two layers:
 | `recyclebin_parse.py` | Recycle Bin metadata | `$Recycle.Bin\<SID>\$I*` |
 | `tasks_parse.py` | Scheduled Tasks | `C:\Windows\System32\Tasks\` |
 | `shellbags_parse.py` | ShellBags (Explorer browsing history) | `UsrClass.dat`, `NTUSER.DAT` |
+| `prefetch_parse.py` | Prefetch execution history | `C:\Windows\Prefetch\*.pf` |
 
 **Intrinsic Timeline Viewer** (`timeline_viewer.py`) - a standalone PyQt6 GUI that loads any CSV output from the parsers (or any compatible CSV) and provides a unified analysis environment with filtering, searching, bookmarking, and export.
 
@@ -307,6 +308,39 @@ Accepts a single `UsrClass.dat` or `NTUSER.DAT` hive file, or a `Users` director
 | `NTUSER.DAT` | `C\Users\<username>\` |
 
 **Note**: ShellBags record Explorer browsing activity including folders that no longer exist, network shares, and paths on removed USB devices. The `last_write` timestamp on a BagMRU key reflects when the entry was last updated, not necessarily when the folder was first browsed. Timestamps in the shell item itself (the `modified` field) are DOS date/time pairs with 2-second resolution and may be empty for network and virtual items.
+
+---
+
+### prefetch_parse.py - Prefetch
+
+```bash
+# Single prefetch file
+python3 prefetch_parse.py SVCHOST.EXE-39447866.pf -o prefetch.csv
+
+# Directory of prefetch files
+python3 prefetch_parse.py /kape/C/Windows/Prefetch/ -o prefetch.csv --summary
+
+# Omit referenced files column (reduces CSV size)
+python3 prefetch_parse.py /kape/C/Windows/Prefetch/ -o prefetch.csv --no-files
+```
+
+Requires `pip install dissect.util` for MAM-compressed prefetch files (Windows 10 and later). Uncompressed prefetch (Windows Vista/7) needs no additional dependencies.
+
+**Output schema**: `timestamp`, `executable`, `hash`, `run_count`, `run_number`, `volume_path`, `volume_serial`, `files_loaded`, `referenced_files`, `source_file`
+
+- `timestamp`: UTC execution time. One row is emitted per recorded run time, so a single prefetch file may produce up to 8 rows (Windows 10 stores the 8 most recent run times).
+- `run_count`: total execution count stored in the prefetch file. This is a lifetime counter and will exceed 8.
+- `run_number`: 1 = most recent run, 8 = oldest recorded run.
+- `referenced_files`: pipe-separated list of files in the prefetch load order (DLLs and other modules loaded during execution). Use the detail panel in the viewer to read this field.
+- `volume_path`: volume device path or GUID as recorded in the prefetch file (e.g. `\VOLUME{...}` or `\DEVICE\HARDDISKVOLUMEn`).
+
+**Prefetch and execution evidence**: prefetch confirms that an executable ran, when it last ran (up to 8 timestamps), and which files it loaded. It does not record the user context, arguments, or process tree. For that, correlate with event 4688 (process creation), Sysmon event 1, or UserAssist.
+
+**Supported versions**: Windows Vista/7 (format version 26) and Windows 8.1/10/11/Server 2016+ (versions 30 and 31). Windows XP (version 17) is not supported.
+
+**Where to find prefetch files in a KAPE collection**: `C\Windows\Prefetch\*.pf`
+
+**Note**: Prefetch must be enabled. It is enabled by default on desktop Windows but disabled by default on Windows Server. Confirm with the registry value `HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters\EnablePrefetcher` (0 = disabled, 1 = application only, 3 = enabled).
 
 ---
 

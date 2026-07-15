@@ -238,7 +238,7 @@ python3 reg_parse.py /kape/C/Users/username/NTUSER.DAT --hive ntuser -o ntuser.c
 
 **Common output schema**: `timestamp`, `hive`, `artefact`, `name`, `value`, `details`, `key_path`, `source_file`
 
-**Shimcache** (`--hive system`): extracts all 1,024 AppCompatCache entries. Each entry records that an executable was present on the filesystem at the time Windows processed it — shimcache does not confirm execution. Entries are ordered 0 (most recently updated) to 1,023 (oldest). The `timestamp` field is the last-modified time of the executable file itself, not the time it was shimcached. Supports Windows 10 / Server 2016 / Server 2019 ("10ts" format) and Windows Vista / 7 ("BADC0FFE" format).
+**Shimcache** (`--hive system`): extracts AppCompatCache entries from the SYSTEM hive. Each entry records that an executable was present on the filesystem at the time Windows processed it — shimcache does not confirm execution. Entries are ordered 0 (most recently updated) to oldest. The `timestamp` field is the last-modified time of the executable file itself, not the time it was shimcached. Supports Windows 10 / Server 2016 / Server 2019 ("10ts" format) and Windows Vista / 7 ("BADC0FFE" format).
 
 **Cached domain credentials**: The SECURITY hive contains up to 10 cached domain logon slots (NL$1–NL$10). Usernames are encrypted with the NL$KM key and cannot be recovered without the SYSTEM hive. Use impacket secretsdump for full extraction:
 

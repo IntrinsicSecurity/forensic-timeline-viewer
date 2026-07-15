@@ -167,6 +167,82 @@ SERVICE_START = {0: "Boot", 1: "System", 2: "Auto", 3: "Manual", 4: "Disabled"}
 SERVICE_TYPE  = {1: "Kernel driver", 2: "FS driver", 16: "Own process", 32: "Share process"}
 
 
+def _parse_shimcache(data: bytes) -> list[dict]:
+    """Parse AppCompatCache binary blob.
+
+    Supports the Windows 8.1 / 10 / Server 2016/2019 "10ts" format:
+      - Header: first DWORD = header size in bytes (typically 0x30 = 48)
+      - Entries start at offset header_size, each beginning with the "10ts" signature
+      - Entry layout: sig(4) + unknown(4) + data_size(4) + path_len(2) + path(path_len)
+                      + last_modified_FILETIME(8) + remaining_data(data_size - path_len - 10)
+
+    Supports the Windows Vista / 7 "BADC0FFE" format as a fallback.
+    """
+    if len(data) < 16:
+        return []
+
+    entries = []
+    header_dword = struct.unpack_from("<I", data, 0)[0]
+
+    # "10ts" format: header_dword is the header size; entries follow immediately after
+    if header_dword < len(data) and data[header_dword:header_dword + 4] == b"10ts":
+        offset = header_dword
+        order = 0
+        while offset + 14 <= len(data):
+            if data[offset:offset + 4] != b"10ts":
+                break
+            try:
+                data_size = struct.unpack_from("<I", data, offset + 8)[0]
+                if data_size < 10 or offset + 12 + data_size > len(data):
+                    break
+                path_len = struct.unpack_from("<H", data, offset + 12)[0]
+                if path_len == 0 or offset + 14 + path_len > len(data):
+                    break
+                path = data[offset + 14:offset + 14 + path_len].decode(
+                    "utf-16-le", errors="replace"
+                ).rstrip("\x00")
+                ft_offset = offset + 14 + path_len
+                last_mod = ""
+                if ft_offset + 8 <= len(data):
+                    ft = struct.unpack_from("<Q", data, ft_offset)[0]
+                    last_mod = fmt_ts(filetime_to_dt(ft))
+                entries.append({"order": order, "path": path, "last_modified": last_mod})
+                order += 1
+                offset += 12 + data_size
+            except (struct.error, UnicodeDecodeError):
+                break
+
+    # Vista / 7 format: header signature 0xBADC0FFE, 64-bit entries
+    elif header_dword == 0xBADC0FFE:
+        try:
+            entry_count = struct.unpack_from("<I", data, 4)[0]
+        except struct.error:
+            return []
+        offset = 128
+        for order in range(min(entry_count, 4096)):
+            if offset + 40 > len(data):
+                break
+            try:
+                path_len    = struct.unpack_from("<H", data, offset)[0]
+                path_offset = struct.unpack_from("<Q", data, offset + 8)[0]
+                last_mod_ft = struct.unpack_from("<Q", data, offset + 16)[0]
+                path = ""
+                if path_offset + path_len <= len(data) and path_len > 0:
+                    path = data[path_offset:path_offset + path_len].decode(
+                        "utf-16-le", errors="replace"
+                    ).rstrip("\x00")
+                entries.append({
+                    "order": order,
+                    "path": path,
+                    "last_modified": fmt_ts(filetime_to_dt(last_mod_ft)),
+                })
+                offset += 40
+            except (struct.error, UnicodeDecodeError):
+                break
+
+    return entries
+
+
 def parse_system(reg, source: str) -> list:
     rows = []
 
@@ -235,6 +311,23 @@ def parse_system(reg, source: str) -> list:
                                      svc.path(), source))
             except Exception:
                 continue
+
+    shim_key = safe_open(reg, f"{cs}\\Control\\Session Manager\\AppCompatCache")
+    if shim_key:
+        try:
+            shim_data = shim_key.value("AppCompatCache").value()
+            shim_entries = _parse_shimcache(shim_data)
+            for e in shim_entries:
+                rows.append(make_row(
+                    e["last_modified"], "SYSTEM", "shimcache",
+                    e["path"], e["last_modified"],
+                    f"order={e['order']}",
+                    shim_key.path(), source,
+                ))
+            if not shim_entries:
+                print("[!] shimcache: unrecognised format or no entries", file=sys.stderr)
+        except Exception as ex:
+            print(f"[!] shimcache parse error: {ex}", file=sys.stderr)
 
     usb_key = safe_open(reg, f"{cs}\\Enum\\USBSTOR")
     if usb_key:

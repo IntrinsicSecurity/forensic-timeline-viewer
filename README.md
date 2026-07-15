@@ -12,7 +12,7 @@ Tested on MacOS (Sequoia) and RHEL 10.
 
 The toolkit has two layers:
 
-**Parsers** — command-line tools that extract artefacts from a KAPE or SANS triage collection and output structured CSV:
+**Parsers** - command-line tools that extract artefacts from a KAPE or SANS triage collection and output structured CSV:
 
 | Parser | Artefact | Source |
 |--------|----------|--------|
@@ -24,7 +24,7 @@ The toolkit has two layers:
 | `tasks_parse.py` | Scheduled Tasks | `C:\Windows\System32\Tasks\` |
 | `shellbags_parse.py` | ShellBags (Explorer browsing history) | `UsrClass.dat`, `NTUSER.DAT` |
 
-**Intrinsic Timeline Viewer** (`timeline_viewer.py`) — a standalone PyQt6 GUI that loads any CSV output from the parsers (or any compatible CSV) and provides a unified analysis environment with filtering, searching, bookmarking, and export.
+**Intrinsic Timeline Viewer** (`timeline_viewer.py`) - a standalone PyQt6 GUI that loads any CSV output from the parsers (or any compatible CSV) and provides a unified analysis environment with filtering, searching, bookmarking, and export.
 
 ---
 
@@ -169,7 +169,7 @@ For 4K displays, use `--scale 1.75` to prevent the UI rendering at physical pixe
 
 ## Parsers
 
-### evtx_parse.py — Windows Event Logs
+### evtx_parse.py - Windows Event Logs
 
 ```bash
 # Single file
@@ -187,13 +187,13 @@ python3 evtx_parse.py /kape/Logs/ --filter-channel Security,System -o filtered.c
 
 **Output schema**: `timestamp_utc`, `record_id`, `event_id`, `level`, `channel`, `provider`, `computer`, `user_sid`, `process_id`, `thread_id`, `description`, `event_data` (JSON), `source_file`
 
-**Timestamp note**: Timestamps are always UTC. Windows Event Viewer displays local time — analysts in BST (UTC+1) will see timestamps one hour behind. This is correct behaviour, not a bug. Clock skew cannot be corrected automatically and requires corroboration from other sources.
+**Timestamp note**: Timestamps are always UTC. Windows Event Viewer displays local time : analysts in BST (UTC+1) will see timestamps one hour behind. This is correct behaviour, not a bug. Clock skew cannot be corrected automatically and requires corroboration from other sources.
 
 **Triage summary** (`--summary`): record count and date range, computers and channels present, top 15 event IDs by frequency, watchlist hits (log cleared, new service, new user, scheduled task, audit policy change, WMI subscriptions, failed logon threshold, explicit credential logons).
 
 ---
 
-### mft_parse.py — Master File Table
+### mft_parse.py - Master File Table
 
 ```bash
 python3 mft_parse.py /kape/C/$MFT -o mft.csv --summary
@@ -205,7 +205,7 @@ python3 mft_parse.py /kape/C/$MFT -o mft.csv --summary
 
 ---
 
-### usn_parse.py — USN Change Journal
+### usn_parse.py - USN Change Journal
 
 ```bash
 python3 usn_parse.py /kape/C/$Extend/$J -o usn.csv --summary
@@ -217,28 +217,28 @@ python3 usn_parse.py /kape/C/$Extend/$J -o usn.csv --summary
 
 ---
 
-### reg_parse.py — Registry Hives
+### reg_parse.py - Registry Hives
 
 ```bash
-# SAM — local user accounts
+# SAM : local user accounts
 python3 reg_parse.py /kape/C/Windows/System32/config/SAM --hive sam -o sam.csv
 
-# SYSTEM — computer name, timezone, services, USB devices
+# SYSTEM : computer name, timezone, services, USB devices
 python3 reg_parse.py /kape/C/Windows/System32/config/SYSTEM --hive system -o system.csv
 
-# SOFTWARE — installed applications, OS version, autoruns
+# SOFTWARE : installed applications, OS version, autoruns
 python3 reg_parse.py /kape/C/Windows/System32/config/SOFTWARE --hive software -o software.csv
 
-# SECURITY — cached domain logon timestamps, audit policy
+# SECURITY : cached domain logon timestamps, audit policy
 python3 reg_parse.py /kape/C/Windows/System32/config/SECURITY --hive security -o security.csv
 
-# NTUSER.DAT — user activity: UserAssist, RecentDocs, RunMRU, autoruns
+# NTUSER.DAT : user activity: UserAssist, RecentDocs, RunMRU, autoruns
 python3 reg_parse.py /kape/C/Users/username/NTUSER.DAT --hive ntuser -o ntuser.csv
 ```
 
 **Common output schema**: `timestamp`, `hive`, `artefact`, `name`, `value`, `details`, `key_path`, `source_file`
 
-**Shimcache** (`--hive system`): extracts AppCompatCache entries from the SYSTEM hive. Each entry records that an executable was present on the filesystem at the time Windows processed it — shimcache does not confirm execution. Entries are ordered 0 (most recently updated) to oldest. The `timestamp` field is the last-modified time of the executable file itself, not the time it was shimcached. Supports Windows 10 / Server 2016 / Server 2019 ("10ts" format) and Windows Vista / 7 ("BADC0FFE" format).
+**Shimcache** (`--hive system`): extracts AppCompatCache entries from the SYSTEM hive. Each entry records that an executable was present on the filesystem at the time Windows processed it : shimcache does not confirm execution. Entries are ordered 0 (most recently updated) to oldest. The `timestamp` field is the last-modified time of the executable file itself, not the time it was shimcached. Supports Windows 10 / Server 2016 / Server 2019 ("10ts" format) and Windows Vista / 7 ("BADC0FFE" format).
 
 **Cached domain credentials**: The SECURITY hive contains up to 10 cached domain logon slots (NL$1–NL$10). Usernames are encrypted with the NL$KM key and cannot be recovered without the SYSTEM hive. Use impacket secretsdump for full extraction:
 
@@ -248,7 +248,7 @@ python3 secretsdump.py -sam SAM -system SYSTEM -security SECURITY LOCAL
 
 ---
 
-### recyclebin_parse.py — Recycle Bin
+### recyclebin_parse.py - Recycle Bin
 
 ```bash
 python3 recyclebin_parse.py /kape/C/'$Recycle.Bin'/ -o recyclebin.csv --summary
@@ -262,7 +262,7 @@ Accepts a single `$I` file or a directory. Recurses into SID subfolders automati
 
 ---
 
-### tasks_parse.py — Scheduled Tasks
+### tasks_parse.py - Scheduled Tasks
 
 ```bash
 python3 tasks_parse.py /kape/C/Windows/System32/Tasks/ -o tasks.csv --summary
@@ -278,7 +278,7 @@ Accepts a single task XML file or the Tasks directory. Recurses into subdirector
 
 ---
 
-### shellbags_parse.py — ShellBags
+### shellbags_parse.py - ShellBags
 
 ```bash
 # Single hive
@@ -295,7 +295,7 @@ Accepts a single `UsrClass.dat` or `NTUSER.DAT` hive file, or a `Users` director
 - `last_write`: timestamp of the BagMRU registry key. Reflects the most recent Explorer browse activity at or below this folder.
 - `modified`: last modified timestamp of the folder itself, extracted from the shell item (DOS date/time, not always populated).
 - `path`: full reconstructed browsing path (e.g. `My Computer\C:\Users\username\Documents`).
-- `type`: item type — `Root`, `Volume`, `Folder`, `File`, `Network`, `Control Panel`, `URI`.
+- `type`: item type : `Root`, `Volume`, `Folder`, `File`, `Network`, `Control Panel`, `URI`.
 
 **Triage summary** (`--summary`): total entry count per user, network paths, and potential removable media references.
 
@@ -329,7 +329,7 @@ The `provider` value must match the provider name in the EVTX file, lowercased. 
 
 For large-scale or team investigations, tools such as [log2timeline/Plaso](https://github.com/log2timeline/plaso) with [Timesketch](https://timesketch.org/) or an ELK stack may be more appropriate. Plaso parses a much wider range of artefacts in a single pass from a raw image or triage collection, and Timesketch provides collaborative analysis, tagging, and saved searches across a team. ELK is well suited to high-volume, log-heavy investigations.
 
-This toolkit occupies a different space. It is designed for fast, standalone, single-case triage — particularly useful for:
+This toolkit occupies a different space. It is designed for fast, standalone, single-case triage, particularly useful for:
 
 - Sole practitioners or small teams without standing infrastructure
 - Client-site work on an air-gapped or network-restricted forensic workstation

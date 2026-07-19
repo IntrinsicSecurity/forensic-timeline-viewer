@@ -88,12 +88,14 @@ pip install python-evtx xmltodict PyYAML pandas PyQt6 mft python-registry dissec
 
 **Step 1: Install Python and pip**
 
-Ubuntu 22.04 and later ship with Python 3.10+. If pip is not installed:
+Ubuntu 22.04 and later ship with Python 3.10+. Install pip and venv. On Ubuntu 24.04 the venv package is version-specific:
 
 ```bash
 sudo apt update
-sudo apt install python3-pip python3-venv
+sudo apt install python3-pip python3.12-venv
 ```
+
+On older Ubuntu versions (22.04 and earlier), use `python3-venv` instead of `python3.12-venv`.
 
 **Step 2: Install dependencies**
 

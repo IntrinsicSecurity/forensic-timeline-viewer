@@ -58,21 +58,94 @@ python3 timeline_viewer.py events.csv
 
 ### Requirements
 
-Python 3.10 or later.
+Python 3.10 or later. Check your version:
 
 ```bash
-pip install python-evtx xmltodict PyYAML pandas PyQt6 mft python-registry
+python3 --version
 ```
 
-On systems where pip refuses to install to system packages:
+If Python is not installed or is below 3.10, install it before continuing (see platform sections below).
+
+---
+
+### macOS
+
+Install dependencies with pip:
 
 ```bash
-pip install python-evtx xmltodict PyYAML pandas PyQt6 mft python-registry --break-system-packages
+pip install python-evtx xmltodict PyYAML pandas PyQt6 mft python-registry dissect.util
 ```
 
-### Linux: additional system packages
+If pip refuses with a system packages error:
 
-On RHEL/Fedora if the viewer fails to start with an `xcb` error:
+```bash
+pip install python-evtx xmltodict PyYAML pandas PyQt6 mft python-registry dissect.util --break-system-packages
+```
+
+---
+
+### Ubuntu / Debian
+
+**Step 1: Install Python and pip**
+
+Ubuntu 22.04 and later ship with Python 3.10+. If pip is not installed:
+
+```bash
+sudo apt update
+sudo apt install python3-pip python3-venv
+```
+
+**Step 2: Install dependencies**
+
+On Ubuntu 23.04 and later, pip will refuse to install packages system-wide. Use a virtual environment:
+
+```bash
+python3 -m venv ~/dfir-env
+source ~/dfir-env/bin/activate
+pip install python-evtx xmltodict PyYAML pandas PyQt6 mft python-registry dissect.util
+```
+
+Activate the virtual environment each time you open a new terminal before running the tools:
+
+```bash
+source ~/dfir-env/bin/activate
+```
+
+On Ubuntu 20.04 or 22.04, if you prefer not to use a virtual environment:
+
+```bash
+pip3 install python-evtx xmltodict PyYAML pandas PyQt6 mft python-registry dissect.util --break-system-packages
+```
+
+**Step 3: Install Qt6 libraries for the viewer**
+
+If the viewer fails to start with an `xcb` or display error:
+
+```bash
+sudo apt install libxcb-cursor0 libxcb-xinerama0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxkbcommon-x11-0
+```
+
+The viewer requires a desktop session. It cannot run over a plain SSH connection. If you are connecting remotely, either use a graphical remote desktop session, or parse artefacts on the remote host and copy the CSV to your local machine for viewing.
+
+---
+
+### RHEL / Fedora
+
+**Step 1: Install Python and pip**
+
+```bash
+sudo dnf install python3 python3-pip
+```
+
+**Step 2: Install dependencies**
+
+```bash
+pip3 install python-evtx xmltodict PyYAML pandas PyQt6 mft python-registry dissect.util
+```
+
+**Step 3: Install Qt6 libraries for the viewer**
+
+If the viewer fails to start with an `xcb` error:
 
 ```bash
 sudo dnf install libxcb xcb-util-wm xcb-util-image xcb-util-keysyms xcb-util-renderutil libxkbcommon-x11
@@ -154,15 +227,6 @@ Build a focused subset of rows from across the full dataset:
 | Pale blue | Logoff: session ended | 4634 |
 
 Colour coding indicates event categories that warrant attention. It does not assert that any individual record is malicious.
-
-### Display on Linux / RHEL
-
-The viewer requires a desktop session. It cannot be launched over a plain SSH connection without X forwarding:
-
-```bash
-ssh -X user@host
-python3 ~/linux-forensic-tools/timeline_viewer.py events.csv
-```
 
 For 4K displays, use `--scale 1.75` to prevent the UI rendering at physical pixels.
 

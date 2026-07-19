@@ -121,7 +121,7 @@ pip3 install python-evtx xmltodict PyYAML pandas PyQt6 mft python-registry disse
 
 **Step 3: Install Qt6 libraries for the viewer**
 
-If the viewer fails to start with an `xcb` or display error:
+This step installs system packages and has nothing to do with the virtual environment. Run it in a normal terminal (the venv does not need to be active):
 
 ```bash
 sudo apt install libxcb-cursor0 libxcb-xinerama0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxkbcommon-x11-0

@@ -56,9 +56,24 @@ python3 timeline_viewer.py events.csv
 
 ## Installation
 
-### Requirements
+### Step 1: Clone the repository
 
-Python 3.10 or later. Check your version:
+```bash
+git clone https://github.com/IntrinsicSecurity/forensic-timeline-viewer.git
+cd forensic-timeline-viewer
+```
+
+If git is not installed:
+
+- **macOS**: `xcode-select --install`
+- **Ubuntu/Debian**: `sudo apt install git`
+- **RHEL/Fedora**: `sudo dnf install git`
+
+---
+
+### Step 2: Check Python version
+
+Python 3.10 or later is required:
 
 ```bash
 python3 --version
@@ -86,7 +101,7 @@ pip install python-evtx xmltodict PyYAML pandas PyQt6 mft python-registry dissec
 
 ### Ubuntu / Debian
 
-**Step 1: Install Python and pip**
+**Step 3: Install Python and pip**
 
 Ubuntu 22.04 and later ship with Python 3.10+. Install pip and venv. On Ubuntu 24.04 the venv package is version-specific:
 
@@ -97,7 +112,7 @@ sudo apt install python3-pip python3.12-venv
 
 On older Ubuntu versions (22.04 and earlier), use `python3-venv` instead of `python3.12-venv`.
 
-**Step 2: Install dependencies**
+**Step 4: Install dependencies**
 
 On Ubuntu 23.04 and later, pip will refuse to install packages system-wide. Use a virtual environment:
 
@@ -119,7 +134,7 @@ On Ubuntu 20.04 or 22.04, if you prefer not to use a virtual environment:
 pip3 install python-evtx xmltodict PyYAML pandas PyQt6 mft python-registry dissect.util --break-system-packages
 ```
 
-**Step 3: Install Qt6 libraries for the viewer**
+**Step 5: Install Qt6 libraries for the viewer**
 
 This step installs system packages and has nothing to do with the virtual environment. Run it in a normal terminal (the venv does not need to be active):
 
@@ -133,19 +148,19 @@ The viewer requires a desktop session. It cannot run over a plain SSH connection
 
 ### RHEL / Fedora
 
-**Step 1: Install Python and pip**
+**Step 3: Install Python and pip**
 
 ```bash
 sudo dnf install python3 python3-pip
 ```
 
-**Step 2: Install dependencies**
+**Step 4: Install dependencies**
 
 ```bash
 pip3 install python-evtx xmltodict PyYAML pandas PyQt6 mft python-registry dissect.util
 ```
 
-**Step 3: Install Qt6 libraries for the viewer**
+**Step 5: Install Qt6 libraries for the viewer**
 
 If the viewer fails to start with an `xcb` error:
 

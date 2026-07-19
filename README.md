@@ -114,19 +114,28 @@ On older Ubuntu versions (22.04 and earlier), use `python3-venv` instead of `pyt
 
 **Step 4: Install dependencies**
 
-On Ubuntu 23.04 and later, pip will refuse to install packages system-wide. Use a virtual environment:
+From Ubuntu 23.04 onwards, Ubuntu blocks pip from installing packages system-wide to prevent conflicts with its own package manager. The standard workaround is a virtual environment: an isolated folder that holds the Python packages for this toolkit, separate from the rest of the system.
+
+Create the virtual environment once:
 
 ```bash
 python3 -m venv ~/dfir-env
+```
+
+Activate it and install the dependencies:
+
+```bash
 source ~/dfir-env/bin/activate
 pip install python-evtx xmltodict PyYAML pandas PyQt6 mft python-registry dissect.util
 ```
 
-Activate the virtual environment each time you open a new terminal before running the tools:
+**Every time you open a new terminal**, activate the virtual environment before running any of the tools, otherwise Python will not find the installed packages:
 
 ```bash
 source ~/dfir-env/bin/activate
 ```
+
+Your prompt will show `(dfir-env)` at the start when the environment is active.
 
 On Ubuntu 20.04 or 22.04, if you prefer not to use a virtual environment:
 

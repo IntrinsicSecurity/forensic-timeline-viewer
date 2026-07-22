@@ -449,6 +449,32 @@ The `provider` value must match the provider name in the EVTX file, lowercased. 
 
 ---
 
+## Adding a New Parser
+
+Any script that outputs a CSV with a `timestamp` (or similar date) column will load in the viewer. To integrate cleanly with the rest of the toolkit, follow these conventions.
+
+### Output schema
+
+Each parser should write a CSV with a consistent schema. The minimum required for the viewer is one column containing a timestamp. Beyond that, use columns that make sense for the artefact. Look at an existing parser for reference: `reg_parse.py` uses `timestamp`, `hive`, `artefact`, `name`, `value`, `details`, `key_path`, `source_file`. Simpler artefacts can use fewer columns.
+
+### Timestamp format
+
+All timestamps must be UTC and formatted as `YYYY-MM-DD HH:MM:SS`. The viewer's date range filter detects timestamp columns automatically by looking for common keywords in the column name (`timestamp`, `created`, `modified`, `accessed`, `write`, `last`, `date`, `time`). Name your timestamp columns accordingly.
+
+### Accepting input
+
+Parsers should accept either a single file or a directory as input. When given a directory, recurse to find all relevant files. Use `argparse` for the CLI interface with `-o` for output path and `--summary` for a triage overview, consistent with the other parsers.
+
+### Summary mode
+
+Implement `--summary` to print a human-readable triage overview to stdout after parsing: record count, date range, and any artefact-specific highlights worth flagging (e.g. suspicious entries, high-value findings). Keep it brief.
+
+### Registering the parser
+
+Once working, add a row to the parser table in the Overview section of this README and a full reference section under Parsers documenting the usage, output schema, and any artefact-specific notes.
+
+---
+
 ## Comparison with Other Tools
 
 For large-scale or team investigations, tools such as [log2timeline/Plaso](https://github.com/log2timeline/plaso) with [Timesketch](https://timesketch.org/) or an ELK stack may be more appropriate. Plaso parses a much wider range of artefacts in a single pass from a raw image or triage collection, and Timesketch provides collaborative analysis, tagging, and saved searches across a team. ELK is well suited to high-volume, log-heavy investigations.
@@ -473,6 +499,7 @@ The concept for this toolkit was directly inspired by Eric Zimmerman's forensic 
 ## Known Limitations
 
 - The viewer is a single-user desktop application. It is not designed for server deployment.
+- Bookmarks do not persist when filters are changed or removed (observed on RHEL 10). Under investigation.
 - Tooltips on event_data cells are inconsistent on Linux at 4K resolution. Use the detail panel for full content.
 - E01 image support requires `ewfmount` and appropriate mount permissions. Mount the image first, then point parsers at the mounted filesystem.
 - USN Journal parsing handles sparse files. Very large journals may take several minutes to parse.

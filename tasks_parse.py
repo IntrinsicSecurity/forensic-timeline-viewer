@@ -22,65 +22,65 @@ from pathlib import Path
 _NS = "http://schemas.microsoft.com/windows/2004/02/mit/task"
 
 
-def _tag(name: str) -> str:
-    return f"{{{_NS}}}{name}"
+def _tag(name: str, ns: str = _NS) -> str:
+    return f"{{{ns}}}{name}" if ns else name
 
 
-def _find_text(element, *path) -> str:
+def _find_text(element, ns: str, *path) -> str:
     node = element
     for part in path:
         if node is None:
             return ""
-        node = node.find(_tag(part))
+        node = node.find(_tag(part, ns))
     return (node.text or "").strip() if node is not None else ""
 
 
-def _parse_triggers(task_element) -> str:
-    triggers_el = task_element.find(_tag("Triggers"))
+def _parse_triggers(task_element, ns: str) -> str:
+    triggers_el = task_element.find(_tag("Triggers", ns))
     if triggers_el is None:
         return ""
     parts = []
     for trigger in triggers_el:
-        tag = trigger.tag.replace(f"{{{_NS}}}", "")
-        start = _find_text(trigger, "StartBoundary")
-        enabled = _find_text(trigger, "Enabled")
+        tag = trigger.tag.replace(f"{{{ns}}}", "") if ns else trigger.tag
+        start = _find_text(trigger, ns, "StartBoundary")
+        enabled = _find_text(trigger, ns, "Enabled")
         desc = tag
         if start:
             desc += f" @ {start}"
         if enabled and enabled.lower() == "false":
             desc += " [disabled]"
         # CalendarTrigger schedule details
-        schedule = trigger.find(_tag("ScheduleByDay"))
+        schedule = trigger.find(_tag("ScheduleByDay", ns))
         if schedule is not None:
-            interval = _find_text(schedule, "DaysInterval")
+            interval = _find_text(schedule, ns, "DaysInterval")
             if interval:
                 desc += f" every {interval}d"
-        schedule = trigger.find(_tag("ScheduleByWeek"))
+        schedule = trigger.find(_tag("ScheduleByWeek", ns))
         if schedule is not None:
-            days = schedule.find(_tag("DaysOfWeek"))
+            days = schedule.find(_tag("DaysOfWeek", ns))
             if days is not None:
-                day_names = [d.tag.replace(f"{{{_NS}}}", "") for d in days]
+                day_names = [d.tag.replace(f"{{{ns}}}", "") if ns else d.tag for d in days]
                 desc += f" on {','.join(day_names)}"
         parts.append(desc)
     return "; ".join(parts)
 
 
-def _parse_actions(task_element) -> tuple[str, str]:
-    actions_el = task_element.find(_tag("Actions"))
+def _parse_actions(task_element, ns: str) -> tuple[str, str]:
+    actions_el = task_element.find(_tag("Actions", ns))
     if actions_el is None:
         return "", ""
     commands = []
     args_list = []
-    for exec_el in actions_el.findall(_tag("Exec")):
-        cmd = _find_text(exec_el, "Command")
-        args = _find_text(exec_el, "Arguments")
+    for exec_el in actions_el.findall(_tag("Exec", ns)):
+        cmd = _find_text(exec_el, ns, "Command")
+        args = _find_text(exec_el, ns, "Arguments")
         if cmd:
             commands.append(cmd)
         if args:
             args_list.append(args)
     # COM handler actions
-    for com_el in actions_el.findall(_tag("ComHandler")):
-        clsid = _find_text(com_el, "ClassId")
+    for com_el in actions_el.findall(_tag("ComHandler", ns)):
+        clsid = _find_text(com_el, ns, "ClassId")
         if clsid:
             commands.append(f"[COM] {clsid}")
     return "; ".join(commands), "; ".join(args_list)
@@ -98,40 +98,42 @@ def parse_task_file(path: Path) -> dict | None:
 
     root = tree.getroot()
 
-    # Handle files with and without namespace declaration
-    if root.tag == _tag("Task"):
+    # Handle files with and without namespace declaration. `ns` is local to
+    # this file's parse — it never mutates shared state, so one file's
+    # namespace (or lack of one) can't leak into how the next file is parsed.
+    if root.tag == _tag("Task", _NS):
         task = root
+        ns = _NS
     elif root.tag == "Task":
-        # No namespace — reparse with empty prefix
         task = root
-        global _NS
-        _NS = ""
+        ns = ""
     else:
+        print(f"[!] Unrecognised root element <{root.tag}> in {path} — skipped", file=sys.stderr)
         return None
 
-    reg = task.find(_tag("RegistrationInfo"))
-    principals = task.find(_tag("Principals"))
-    settings = task.find(_tag("Settings"))
+    reg = task.find(_tag("RegistrationInfo", ns))
+    principals = task.find(_tag("Principals", ns))
+    settings = task.find(_tag("Settings", ns))
 
-    author = _find_text(reg, "Author") if reg is not None else ""
-    date_created = _find_text(reg, "Date") if reg is not None else ""
-    description = _find_text(reg, "Description") if reg is not None else ""
-    uri = _find_text(reg, "URI") if reg is not None else ""
+    author = _find_text(reg, ns, "Author") if reg is not None else ""
+    date_created = _find_text(reg, ns, "Date") if reg is not None else ""
+    description = _find_text(reg, ns, "Description") if reg is not None else ""
+    uri = _find_text(reg, ns, "URI") if reg is not None else ""
 
     run_as = ""
     logon_type = ""
     if principals is not None:
-        principal = principals.find(_tag("Principal"))
+        principal = principals.find(_tag("Principal", ns))
         if principal is not None:
-            run_as = _find_text(principal, "UserId") or _find_text(principal, "GroupId")
-            logon_type = _find_text(principal, "LogonType")
+            run_as = _find_text(principal, ns, "UserId") or _find_text(principal, ns, "GroupId")
+            logon_type = _find_text(principal, ns, "LogonType")
 
     enabled = ""
     if settings is not None:
-        enabled = _find_text(settings, "Enabled")
+        enabled = _find_text(settings, ns, "Enabled")
 
-    command, arguments = _parse_actions(task)
-    triggers = _parse_triggers(task)
+    command, arguments = _parse_actions(task, ns)
+    triggers = _parse_triggers(task, ns)
 
     task_name = uri.lstrip("\\") if uri else path.stem
 

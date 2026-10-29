@@ -24,6 +24,7 @@ The toolkit has two layers:
 | `tasks_parse.py` | Scheduled Tasks | `C:\Windows\System32\Tasks\` |
 | `shellbags_parse.py` | ShellBags (Explorer browsing history) | `UsrClass.dat`, `NTUSER.DAT` |
 | `prefetch_parse.py` | Prefetch execution history | `C:\Windows\Prefetch\*.pf` |
+| `auth_parse.py` | Linux authentication events | `/var/log/auth.log`, `/var/log/secure`, journald JSON export |
 
 **Intrinsic Timeline Viewer** (`timeline_viewer.py`) - a standalone PyQt6 GUI that loads any CSV output from the parsers (or any compatible CSV) and provides a unified analysis environment with filtering, searching, bookmarking, and export.
 
@@ -431,6 +432,55 @@ Requires `pip install dissect.util` for MAM-compressed prefetch files (Windows 1
 **Where to find prefetch files in a KAPE collection**: `C\Windows\Prefetch\*.pf`
 
 **Note**: Prefetch must be enabled. It is enabled by default on desktop Windows but disabled by default on Windows Server. Confirm with the registry value `HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters\EnablePrefetcher` (0 = disabled, 1 = application only, 3 = enabled).
+
+---
+
+### auth_parse.py - Linux Authentication Logs
+
+```bash
+# Ubuntu auth.log
+python3 auth_parse.py /var/log/auth.log -o auth.csv --summary
+
+# RHEL/Fedora journald JSON export
+journalctl _COMM=sshd _COMM=sshd-session _COMM=sudo _COMM=su --output=json > auth.json
+python3 auth_parse.py auth.json -o auth.csv --summary
+
+# Combine multiple files (different hosts or log rotations)
+python3 auth_parse.py auth.log auth.json -o auth.csv
+```
+
+**Output schema**: `timestamp`, `hostname`, `process`, `pid`, `event_type`, `username`, `source_ip`, `source_port`, `auth_method`, `target_user`, `command`, `details`, `source_file`
+
+**Event types**:
+
+| event_type | Description |
+|------------|-------------|
+| `ssh_accepted` | Successful SSH login. `auth_method` shows the authentication method (password, publickey). |
+| `ssh_failed` | Failed SSH login attempt. `details` shows `invalid user` where the account does not exist. |
+| `ssh_invalid_user` | SSH connection attempt for a non-existent username (pre-authentication). |
+| `ssh_disconnected` | SSH session terminated. |
+| `sudo_command` | Command run via sudo. `username` is the invoking user; `target_user` is the run-as user; `command` is the full command string. |
+| `su_switch` | User switch via su. |
+| `pam_session_open` | PAM session opened (login, sudo escalation, etc.). |
+| `pam_session_close` | PAM session closed. |
+| `pam_auth_failure` | PAM authentication failure. |
+| `useradd` | New user account created. |
+| `userdel` | User account deleted. |
+
+**Format detection**: auto-detected. Files starting with `{` are treated as journald JSON (one JSON object per line, `journalctl --output=json`). All other files are parsed as text auth logs (Ubuntu ISO 8601 format or traditional syslog).
+
+**Timestamp note**: journald timestamps come from `__REALTIME_TIMESTAMP` (microseconds since epoch, UTC). Ubuntu auth.log timestamps include a UTC offset. Traditional syslog format (used by RHEL/Fedora `/var/log/secure`) has no year or timezone - the file mtime year is used as a best guess and timestamps are assumed UTC.
+
+**Fedora / RHEL note**: SSH session events on Fedora 42+ are logged under the process name `sshd-session`, not `sshd`. Include both in your journald export:
+
+```bash
+journalctl _COMM=sshd _COMM=sshd-session _COMM=sudo _COMM=su --output=json > auth.json
+```
+
+**Where to find auth logs**:
+
+- Ubuntu/Debian: `/var/log/auth.log` (and rotated copies `auth.log.1`, `auth.log.2.gz`)
+- RHEL/Fedora/CentOS: `/var/log/secure`, or journald (no persistent log file if `Storage=volatile` in `journald.conf`)
 
 ---
 
